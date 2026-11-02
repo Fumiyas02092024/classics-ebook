@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f1e7">
+<title>{{TITLE}}</title>
+<style>
+:root{--bg:#f6f1e7;--fg:#2b2620;--sub:#6b6458;--accent:#8a6d2f;--line:#e2d8c3;--panel:#fffaf0;--fs:18px}
+:root[data-theme="dark"]{--bg:#16181d;--fg:#d9d4c7;--sub:#9a9384;--accent:#c9a860;--line:#2c2f36;--panel:#1e2128}
+:root[data-theme="white"]{--bg:#ffffff;--fg:#1d1d1d;--sub:#666;--accent:#8a6d2f;--line:#e6e6e6;--panel:#fafafa}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Hiragino Mincho ProN","YuMincho","Yu Mincho","Noto Serif JP",serif;font-size:var(--fs);line-height:1.9;transition:background .2s,color .2s}
+#bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:30}
+#bar i{display:block;height:100%;width:0;background:var(--accent)}
+header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:6px;padding:calc(env(safe-area-inset-top) + 6px) 12px 6px;background:var(--bg);border-bottom:1px solid var(--line);font-family:-apple-system,"Hiragino Sans",sans-serif;font-size:14px;transition:transform .25s}
+header.hide{transform:translateY(-110%)}
+header .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--sub)}
+header button{font:inherit;background:none;border:1px solid var(--line);color:var(--fg);border-radius:8px;min-width:40px;height:34px;padding:0 10px}
+main{max-width:40em;margin:0 auto;padding:calc(env(safe-area-inset-top) + 64px) 16px 30vh}
+p{margin:0;text-indent:1em;text-align:justify}
+h1{font-size:1.4em;line-height:1.5;margin:3em 0 1.4em}
+h2{font-size:1.12em;margin:2.2em 0 .8em}
+h3{font-size:1em;margin:1.6em 0 .5em}
+.summary{text-indent:0;font-size:.9em;color:var(--sub);margin:.9em 0 .9em .4em;padding-left:.8em;border-left:2px solid var(--line)}
+.note{text-indent:0;font-size:.85em;color:var(--sub);margin:.9em 0 .9em 1.6em}
+.source{text-indent:0;font-size:.82em;color:var(--accent);margin:-.8em 0 1.6em;text-align:right}
+.verse{margin:1.3em 0 1.3em 1.6em}
+.verse p{text-indent:-1em;padding-left:1em}
+.dlg{text-indent:-1em;margin:.35em 0 0 1em}
+.spk{font-weight:bold;color:var(--accent)}
+.scene{text-indent:0;text-align:center;color:var(--accent);margin:1.4em 0}
+ul{list-style:none;padding:0;margin:.8em 0 .8em .5em}
+li{text-indent:-1em;padding-left:1em}
+li::before{content:"・"}
+.part{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border-top:1px solid var(--line);margin-top:4em}
+.part p{text-indent:0;text-align:center;color:var(--sub)}
+.parttitle{font-size:1.9em;margin:0 0 1em}
+.epigraph{margin-top:2em;font-style:italic}
+.cover{min-height:80vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.cover h1{font-size:3em;letter-spacing:.2em;margin:0 0 .6em}
+.cover p{text-indent:0;text-align:center;color:var(--sub)}
+.cover .rings{display:flex;margin-bottom:2em}
+.cover .rings span{width:56px;height:56px;border:2px solid var(--accent);border-radius:50%;margin:0 -8px}
+#toc{position:fixed;inset:0;z-index:40;background:var(--panel);overflow-y:auto;padding:calc(env(safe-area-inset-top) + 16px) 20px 40px;transform:translateX(-100%);transition:transform .25s;font-family:-apple-system,"Hiragino Sans",sans-serif;font-size:15px;line-height:1.6}
+#toc.open{transform:none}
+#toc ol{list-style:none;margin:0;padding:0}
+#toc li{text-indent:0;padding:0}
+#toc li::before{content:none}
+#toc a{display:block;color:var(--fg);text-decoration:none;padding:10px 4px;border-bottom:1px solid var(--line)}
+#toc .toc-part a{font-weight:bold;color:var(--accent);margin-top:12px}
+#toc .in-part a{padding-left:16px}
+#toc .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+#toc .head button{font:inherit;background:none;border:1px solid var(--line);color:var(--fg);border-radius:8px;height:34px;padding:0 12px}
+#settings{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 50px);z-index:25;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;display:none;font-family:-apple-system,"Hiragino Sans",sans-serif;font-size:14px;box-shadow:0 6px 24px rgba(0,0,0,.12)}
+#settings.open{display:block}
+#settings .row{display:flex;gap:6px;align-items:center;margin:6px 0}
+#settings button{font:inherit;background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:8px;height:36px;min-width:44px;padding:0 10px}
+</style>
+</head>
+<body>
+<div id="bar"><i></i></div>
+<header id="hdr">
+  <button id="btnToc" aria-label="目次">目次</button>
+  <span class="t" id="cur">{{TITLE}}</span>
+  <button id="btnSet" aria-label="表示設定">Aa</button>
+</header>
+<div id="settings">
+  <div class="row">文字　<button data-fs="-1">小</button><button data-fs="1">大</button></div>
+  <div class="row">背景　<button data-theme="sepia">生成り</button><button data-theme="white">白</button><button data-theme="dark">夜</button></div>
+</div>
+<nav id="toc">
+  <div class="head"><strong>目次</strong><button id="btnClose">閉じる</button></div>
+  <ol>
+  <li class="toc-part"><a href="#top">表紙</a></li>
+  {{TOC}}
+  </ol>
+</nav>
+<main>
+<section class="cover" id="top">
+  <div class="rings"><span></span><span></span><span></span></div>
+  <h1>{{TITLE}}</h1>
+  <p>ホメロス　プラトン　ダンテ</p>
+  <p style="margin-top:2em">現代語再話</p>
+</section>
+{{CONTENT}}
+</main>
+<script>
+(function(){
+  var root=document.documentElement, store={
+    get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},
+    set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  };
+  var fs=parseInt(store.get('mt_fs')||'18',10);
+  function applyFs(){root.style.setProperty('--fs',fs+'px')}
+  function applyTheme(t){if(t==='sepia'){root.removeAttribute('data-theme')}else{root.setAttribute('data-theme',t)}
+    var m=document.querySelector('meta[name=theme-color]');m.content=getComputedStyle(document.body).backgroundColor}
+  applyFs();applyTheme(store.get('mt_theme')||'sepia');
+  var toc=document.getElementById('toc'),set=document.getElementById('settings'),hdr=document.getElementById('hdr');
+  document.getElementById('btnToc').onclick=function(){toc.classList.add('open')};
+  document.getElementById('btnClose').onclick=function(){toc.classList.remove('open')};
+  toc.addEventListener('click',function(e){if(e.target.tagName==='A'){toc.classList.remove('open')}});
+  document.getElementById('btnSet').onclick=function(){set.classList.toggle('open')};
+  set.addEventListener('click',function(e){var b=e.target;
+    if(b.dataset.fs){fs=Math.max(13,Math.min(28,fs+parseInt(b.dataset.fs,10)));store.set('mt_fs',fs);applyFs()}
+    if(b.dataset.theme){store.set('mt_theme',b.dataset.theme);applyTheme(b.dataset.theme)}});
+  // 現在の章名と進捗、読んだ位置の保存
+  var heads=[].slice.call(document.querySelectorAll('main section > h1'));
+  var cur=document.getElementById('cur'),bar=document.querySelector('#bar i'),lastY=0,ticking=false;
+  function onScroll(){
+    var y=window.scrollY,h=document.documentElement.scrollHeight-innerHeight;
+    bar.style.width=(h>0?y/h*100:0)+'%';
+    var name='{{TITLE}}';for(var i=0;i<heads.length;i++){if(heads[i].getBoundingClientRect().top<120){name=heads[i].textContent}else break}
+    cur.textContent=name;
+    if(y>lastY+8&&y>200){hdr.classList.add('hide');set.classList.remove('open')}else if(y<lastY-8){hdr.classList.remove('hide')}
+    lastY=y;store.set('mt_pos',String(h>0?y/h:0));ticking=false}
+  window.addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(onScroll)}},{passive:true});
+  var pos=parseFloat(store.get('mt_pos')||'0');
+  if(!location.hash&&pos>0){window.addEventListener('load',function(){window.scrollTo(0,pos*(document.documentElement.scrollHeight-innerHeight))})}
+})();
+</script>
+</body>
+</html>
